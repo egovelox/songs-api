@@ -1,0 +1,14 @@
+---
+name: Songs API CD
+
+on: push
+
+jobs:
+  hello-gh-actions:
+    name: Hello GitHub Actions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Tests
+        run: echo "RUNNING TESTS!"

@@ -1,0 +1,51 @@
+{
+  "name": "songs-api",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn run clean && tsc",
+    "start": "cd ./dist && NODE_ENV=development node ./index.js",
+    "clean": "rimraf ./dist",
+    "prettier:fix": "prettier --write \"./src/**/*.ts\"",
+    "start:watch": "NODE_ENV=development nodemon --watch ./src/* -e ts --exec 'yarn run build && yarn run start'",
+    "knex:migrate:make": "knex --knexfile src/knex/knexfile.ts migrate:make -x ts",
+    "knex:migrate:latest": "knex --knexfile src/knex/knexfile.ts migrate:latest",
+    "knex:migrate:rollback": "knex --knexfile src/knex/knexfile.ts migrate:rollback",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.(ts)": [
+      "prettier --write"
+    ],
+    "*.{js,css,md}": "prettier --write"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "printWidth": 100
+  },
+  "importSort": {
+    ".ts": {
+      "style": "module",
+      "parser": "typescript"
+    }
+  },
+  "dependencies": {
+    "fp-ts": "2.9.5",
+    "fp-ts-contrib": "0.1.21",
+    "knex": "0.21.5",
+    "mysql": "2.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "14.6.4",
+    "husky": ">=6",
+    "import-sort-style-module": "6.0.0",
+    "lint-staged": "10.1.2",
+    "nodemon": "^2.0.7",
+    "prettier": "2.0.3",
+    "prettier-plugin-import-sort": "0.0.4",
+    "rimraf": "3.0.2",
+    "ts-node": "9.0.0",
+    "typescript": "4.0.2"
+  }
+}
