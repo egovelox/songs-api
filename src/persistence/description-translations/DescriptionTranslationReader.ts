@@ -1,21 +1,19 @@
 import { pipe } from "fp-ts/lib/pipeable"
 import * as TE from "fp-ts/lib/TaskEither"
-import { TaskEither } from "fp-ts/lib/TaskEither"
 import * as Knex from "knex"
+import { UserRow } from "../../persistence/users/UserRow"
 
-import { executeQuery, isNonEmptyArray } from "../../knex/dbUtils"
-import { SongT, User } from "../../models/Types"
-import { Song } from "../../models/Types"
+import { executeQuery } from "../../knex/dbUtils"
 import { DescriptionTranslation } from "../../models/Types"
-import { PlaylistJoinedSongRow } from "../playlists/PlaylistJoinedSongRow"
-import * as songSchema from "../songs/SongSchema"
 import * as descriptionTranslationSchema from "./DescriptionTranslationSchema"
+import { SongRow } from "../../persistence/songs/SongRow"
 
-export function getTranslatedDescriptions(knex: Knex, user: User, songs: SongT[]) {
+export function getTranslatedDescriptions(knex: Knex, user: UserRow, songs: SongRow[]) {
+
   const selectQuery = buildSelectQuerySong(knex)
-    .whereIn(descriptionTranslationSchema.columns.lang, [
-      user.principalLang,
-      user.secondaryLang ?? "",
+    .whereIn(`${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.lang}`, [
+      user.principal_lang,
+      user.secondary_lang ?? "",
     ])
     .whereIn(
       `${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.songId}`,
@@ -29,19 +27,19 @@ export function getTranslatedDescriptions(knex: Knex, user: User, songs: SongT[]
     ),
     TE.map(({ translationRows }) => {
       const firstArr: DescriptionTranslation[] = translationRows.filter(
-        (r) => r.lang === user.principalLang
+        (r) => r.lang === user.principal_lang
       )
 
       let secArr: DescriptionTranslation[] = []
-      if (user.secondaryLang !== undefined) {
-        secArr = translationRows.filter((r) => r.lang === user.secondaryLang)
+      if (user.secondary_lang !== undefined) {
+        secArr = translationRows.filter((r) => r.lang === user.secondary_lang)
       }
 
       const arr: DescriptionTranslation[] = []
 
       songs.map((song) => {
         firstArr.map((r) => {
-          if (r.song_id === song.song_id && r.lang === user.principalLang) {
+          if (r.song_id === song.song_id && r.lang === user.principal_lang) {
             arr.push(r)
             secArr = secArr.filter((r) => r.song_id !== song.song_id)
           }
@@ -54,8 +52,8 @@ export function getTranslatedDescriptions(knex: Knex, user: User, songs: SongT[]
 
 const selectSongFields = (knex: Knex) =>
   knex
-    .select(descriptionTranslationSchema.columns.lang)
-    .select(descriptionTranslationSchema.columns.value)
+    .select(`${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.lang}`)
+    .select(`${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.value}`)
     .select(`${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.songId}`)
 
 const buildSelectQuerySong = (

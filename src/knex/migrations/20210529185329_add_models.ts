@@ -45,7 +45,7 @@ async function createSongsSchema(knex: Knex<any, unknown[]>) {
   await knex.schema.raw(`
         CREATE TABLE ${TableNames.songs}
         (
-            id INT NOT NULL,
+            id VARCHAR(255) NOT NULL,
             name VARCHAR(255) NOT NULL,
             author VARCHAR(255) NOT NULL,
             duration FLOAT NOT NULL,
@@ -61,7 +61,7 @@ async function createUsersSchema(knex: Knex<any, unknown[]>) {
   await knex.schema.raw(`
         CREATE TABLE ${TableNames.users}
         (
-            id INT NOT NULL,
+            id VARCHAR(255) NOT NULL,
             lastname VARCHAR(255) NOT NULL,
             firstname VARCHAR(255) NOT NULL,
             username VARCHAR(255) NOT NULL,
@@ -79,8 +79,8 @@ async function createPlaylistsSchema(knex: Knex<any, unknown[]>) {
   await knex.schema.raw(`
         CREATE TABLE ${TableNames.playlists}
         (
-            id INT NOT NULL,
-            user_id INT NOT NULL,
+            id VARCHAR(255) NOT NULL,
+            user_id VARCHAR(255) NOT NULL,
             name VARCHAR(255) NOT NULL,
             created_at DATETIME NOT NULL,
 
@@ -94,9 +94,9 @@ async function createSongPlaylistSchema(knex: Knex<any, unknown[]>) {
   await knex.schema.raw(`
         CREATE TABLE ${TableNames.songPlaylist}
         (
-            song_index INT NOT NULL,
-            song_id INT NOT NULL,
-            playlist_id INT NOT NULL,
+            song_index VARCHAR(255) NOT NULL,
+            song_id VARCHAR(255) NOT NULL,
+            playlist_id VARCHAR(255) NOT NULL,
 
             PRIMARY KEY(song_index, song_id, playlist_id)
         );        
@@ -107,8 +107,8 @@ async function createDescriptionTranslationsSchema(knex: Knex<any, unknown[]>) {
   await knex.schema.raw(`
         CREATE TABLE ${TableNames.descriptionsTranslations}
         (
-            id INT NOT NULL,
-            song_id INT NOT NULL,
+            id VARCHAR(255) NOT NULL,
+            song_id VARCHAR(255) NOT NULL,
             lang VARCHAR(5),
             value VARCHAR(255),
 

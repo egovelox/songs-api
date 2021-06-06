@@ -3,19 +3,11 @@ export type Song = {
   author: string
   duration: number
   description: string
-  id: number
-}
-
-export type SongT = {
-  name: string
-  author: string
-  duration: number
-  description: string
-  song_id: number
+  id: string
 }
 
 export type User = {
-  id: number
+  id: string
   lastname: string
   firstname: string
   username: string
@@ -24,17 +16,10 @@ export type User = {
   secondaryLang?: string
 }
 
-export type PlaylistRow = {
-  id: number
-  name: number
-  userId: number
-  createdAt: Date
-}
-
 export type Playlist = {
-  id: number
-  name: number
-  userId: number
+  id: string
+  name: string
+  userId: string
   createdAt: Date
   songs: Song[]
 }
@@ -42,5 +27,5 @@ export type Playlist = {
 export type DescriptionTranslation = {
   value: string
   lang: string
-  song_id: number
+  song_id: string
 }

@@ -1,6 +1,6 @@
 export interface PlaylistRow {
-  readonly id: number
-  readonly name: number
-  readonly userId: number
-  readonly createdAt: Date
+  readonly id: string
+  readonly name: string
+  readonly user_id: string
+  readonly created_at: Date
 }

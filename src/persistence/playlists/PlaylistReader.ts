@@ -2,40 +2,39 @@ import { pipe } from "fp-ts/lib/pipeable"
 import * as TE from "fp-ts/lib/TaskEither"
 import { TaskEither } from "fp-ts/lib/TaskEither"
 import * as Knex from "knex"
-
+import { InternalError } from "../../models/errors/InternalError"
 import { executeQuery, isNonEmptyArray } from "../../knex/dbUtils"
-import { knex } from "../../knex/knex"
-import { DomainError } from "../../models/ErrorTypes"
-import { Song, SongT } from "../../models/Types"
-import { User } from "../../models/Types"
+import { DomainError } from "../../models/errors/DomainError"
 import { Playlist } from "../../models/Types"
-import { DescriptionTranslation } from "../../models/Types"
-import { getTranslatedDescriptions } from "../description-translations/DescriptionTranslationReader"
-import * as descriptionTranslationSchema from "../description-translations/DescriptionTranslationSchema"
-import * as playlistSongSchema from "../playlist-song/PlaylistSongSchema"
-import { PlaylistJoinedSongRow } from "../playlists/PlaylistJoinedSongRow"
+import { UserRow } from "../../persistence/users/UserRow"
+import { SongRow } from "../../persistence/songs/SongRow"
 import { PlaylistRow } from "../playlists/PlaylistRow"
+import * as playlistSongSchema from "../playlist-song/PlaylistSongSchema"
 import * as songSchema from "../songs/SongSchema"
-import * as userSchema from "../users/userSchema"
 import * as playlistSchema from "./PlaylistSchema"
+import { getTranslatedDescriptions } from "../description-translations/DescriptionTranslationReader"
 
-export interface PlayListReader {
-  findOne(user: User, playlistID: number): TaskEither<DomainError, SongT[]>
+export interface PlaylistReader {
+  findOne(user: UserRow, playlistID: string): TaskEither<DomainError, Playlist>
 }
 
-export function PlaylistReaderImpl(knex: Knex): PlayListReader {
+type Dependencies = {
+  knex: Knex
+}
+
+export function PlaylistReaderImpl(deps: Dependencies): PlaylistReader {
   return {
-    findOne: findOne(knex),
+    findOne: findOne(deps),
   }
 }
 
-function findOne(knex: Knex) {
-  return (user: User, playlistID: number): TaskEither<DomainError, SongT[]> => {
+function findOne({knex}: Dependencies) {
+  return (user: UserRow, playlistID: string): TaskEither<DomainError, Playlist> => {
     const selectPlaylistQuery = buildSelectQueryPlaylist(knex)(selectPlaylistFields)
       .where(`${playlistSchema.columns.userId}`, user.id)
       .andWhere(`${playlistSchema.columns.id}`, playlistID)
 
-    const selectSongsQuery = (id: number) =>
+    const selectSongsQuery = (id: string) =>
       buildSelectQuerySongs(knex).where({
         [songSchema.columns.playlistId]: id,
       })
@@ -45,14 +44,15 @@ function findOne(knex: Knex) {
       TE.bind("playlistRows", () => executeQuery<PlaylistRow, PlaylistRow[]>(selectPlaylistQuery)),
       TE.filterOrElse(
         ({ playlistRows }) => isNonEmptyArray(playlistRows),
-        (_) => DomainError("Check params, no result")
+        (_) => InternalError("Check params, no result")
       ),
       TE.bind("songRows", ({ playlistRows: [playlistRow] }) =>
-        executeQuery<SongT, SongT[]>(selectSongsQuery(playlistRow.id))
+        executeQuery<SongRow, SongRow[]>(selectSongsQuery(playlistRow.id))
       ),
       TE.bind("translationRows", ({ songRows }) => getTranslatedDescriptions(knex, user, songRows)),
       TE.map(({ playlistRows, songRows, translationRows }) => {
-        const songs: SongT[] = songRows.map((s: SongT) => {
+
+        const songs: SongRow[] = songRows.map((s: SongRow) => {
           return translationRows.map((t) => t.song_id).includes(s.song_id)
             ? {
                 ...s,
@@ -62,8 +62,7 @@ function findOne(knex: Knex) {
               }
             : s
         })
-
-        return songs
+        return mapToPlaylist(playlistRows[0], songs)
       })
     )
   }
@@ -81,7 +80,7 @@ const selectPlaylistFields = (knex: Knex) =>
     .select(`${playlistSchema.columns.createdAt}`)
     .select(`${playlistSchema.columns.userId}`)
 
-const buildSelectQuerySongs = (knex: Knex): Knex.QueryBuilder<SongT, SongT[]> =>
+const buildSelectQuerySongs = (knex: Knex): Knex.QueryBuilder<SongRow, SongRow[]> =>
   selectSongFields(knex)
     .from(knex.ref(`${playlistSongSchema.tableName}`).as(playlistSongSchema.prefix))
     .innerJoin(
@@ -102,3 +101,14 @@ const selectSongFields = (knex: Knex) =>
     .select(`${songSchema.prefix}.${songSchema.columns.author}`)
     .select(`${songSchema.prefix}.${songSchema.columns.description}`)
     .select(`${songSchema.prefix}.${songSchema.columns.duration}`)
+
+ 
+function mapToPlaylist(playlist: PlaylistRow, songs: SongRow[]): Playlist {
+  return {
+    id: playlist.id,
+    name: playlist.name,
+    userId: playlist.user_id,
+    createdAt: playlist.created_at,
+    songs: songs.map((s) => ({...s, id: s.song_id }))
+  }
+}
