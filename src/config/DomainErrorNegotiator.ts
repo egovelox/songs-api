@@ -16,13 +16,19 @@ export function NegotiateResponseType(
                 error: error.type,
                 message: error.clientMessage
             })
-    case ErrorType.INTERNAL_ERROR:
-    default: 
-        const errorId = generateRandomChars()
-        logger.error(`Error calling ${url} with id ${errorId}`, error)
-        return reply.status(500).send({
-            error: error.type,
-            message: `Error id: ${errorId} with message ${error.clientMessage}`
-        })
+        case ErrorType.NOT_FOUND_ERROR:
+            logger.warn(JSON.stringify(error))
+            return reply.status(404).send({
+                error: error.type,
+                message: error.clientMessage
+            })
+        case ErrorType.INTERNAL_ERROR:
+        default: 
+            const errorId = generateRandomChars()
+            logger.error(`Error calling ${url} with id ${errorId}`, error)
+            return reply.status(500).send({
+                error: error.type,
+                message: `Error id: ${errorId} with message ${error.clientMessage}`
+            })
     }
 }

@@ -13,7 +13,7 @@ export async function GlobalErrorHandler(
     const { validation } = error
 
     if( validation ) {
-        logger.warn(`Error callung ${request.url}: ${errorMessage}`)
+        logger.warn(`Error calling ${request.url}: ${errorMessage}`)
         return reply.status(400).send({
             error: ErrorType.BAD_REQUEST,
             message: `${error}`,
