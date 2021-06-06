@@ -1,20 +1,19 @@
 import { pipe } from "fp-ts/lib/pipeable"
 import * as TE from "fp-ts/lib/TaskEither"
 import * as Knex from "knex"
-import { UserRow } from "../../persistence/users/UserRow"
 
 import { executeQuery } from "../../knex/dbUtils"
 import { DescriptionTranslation } from "../../models/Types"
-import * as descriptionTranslationSchema from "./DescriptionTranslationSchema"
 import { SongRow } from "../../persistence/songs/SongRow"
+import { UserRow } from "../../persistence/users/UserRow"
+import * as descriptionTranslationSchema from "./DescriptionTranslationSchema"
 
 export function getTranslatedDescriptions(knex: Knex, user: UserRow, songs: SongRow[]) {
-
   const selectQuery = buildSelectQuerySong(knex)
-    .whereIn(`${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.lang}`, [
-      user.principal_lang,
-      user.secondary_lang ?? "",
-    ])
+    .whereIn(
+      `${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.lang}`,
+      [user.principal_lang, user.secondary_lang ?? ""]
+    )
     .whereIn(
       `${descriptionTranslationSchema.prefix}.${descriptionTranslationSchema.columns.songId}`,
       [...songs.map((s) => s.song_id)]
@@ -62,4 +61,3 @@ const buildSelectQuerySong = (
   selectSongFields(knex).from(
     knex.ref(`${descriptionTranslationSchema.tableName}`).as(descriptionTranslationSchema.prefix)
   )
-;

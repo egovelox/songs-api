@@ -1,7 +1,7 @@
 import * as t from "io-ts"
 
-import { Song } from "./Song"
 import { DateTimeFromISOString } from "./_support/date-time"
+import { Song } from "./Song"
 
 export const PlaylistSchema = JSON.parse(`{
     "type": "object",
@@ -60,11 +60,11 @@ export const PlaylistSchema = JSON.parse(`{
 }`)
 
 export const Playlist = t.type({
-    id: t.string,
-    name: t.string,
-    user: t.string,
-    creationDate: DateTimeFromISOString,
-    songs: t.array(Song)
+  id: t.string,
+  name: t.string,
+  user: t.string,
+  creationDate: DateTimeFromISOString,
+  songs: t.array(Song),
 })
 
 export type Playlist = t.TypeOf<typeof Playlist>

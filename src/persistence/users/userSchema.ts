@@ -11,5 +11,5 @@ export const columns = {
   email: "email",
   firstname: "firstname",
   lastname: "lastname",
-  username: "username"
+  username: "username",
 }

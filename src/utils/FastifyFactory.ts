@@ -4,25 +4,25 @@ import { GlobalErrorHandler } from "../config/GlobalErrorHandler"
 import { logger } from "./Logger"
 
 export function createFastifyInstance(): fastify.FastifyInstance {
-    const instance = fastify.default({
-        ajv: {
-            customOptions: {
-                coerceTypes: "array"
-            },
-        },
-    })
-    instance.setErrorHandler(GlobalErrorHandler)
-    setCors(instance)
+  const instance = fastify.default({
+    ajv: {
+      customOptions: {
+        coerceTypes: "array",
+      },
+    },
+  })
+  instance.setErrorHandler(GlobalErrorHandler)
+  setCors(instance)
 
-    return instance
+  return instance
 }
 
 const setCors = (instance: fastify.FastifyInstance) => {
-    if( process.env.NODE_ENV === "development" ) {
-        const allowedOrigin = "*"
-        instance.register(require("fastify-cors"), {
-            origin: allowedOrigin
-        })
-        logger.info(`Allowed origin : ${allowedOrigin}`)
-    }
+  if (process.env.NODE_ENV === "development") {
+    const allowedOrigin = "*"
+    instance.register(require("fastify-cors"), {
+      origin: allowedOrigin,
+    })
+    logger.info(`Dev mode, allowed origin : ${allowedOrigin}`)
+  }
 }

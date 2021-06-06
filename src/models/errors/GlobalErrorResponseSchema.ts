@@ -16,10 +16,10 @@ export const GlobalErrorResponseSchema = JSON.parse(`{
 }`)
 
 export const GlobalErrorResponse = t.intersection([
-    t.type({
-        error: t.string
-    }),
-    t.partial({
-        message: t.string
-    })
+  t.type({
+    error: t.string,
+  }),
+  t.partial({
+    message: t.string,
+  }),
 ])

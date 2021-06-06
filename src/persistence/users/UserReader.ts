@@ -3,8 +3,8 @@ import * as Knex from "knex"
 
 import { executeQuery } from "../../knex/dbUtils"
 import { DomainError } from "../../models/errors/DomainError"
-import * as userSchema from "./UserSchema"
 import { UserRow } from "./UserRow"
+import * as userSchema from "./UserSchema"
 
 export interface UserReader {
   findOne(userID: string): TaskEither<DomainError, UserRow[]>
@@ -20,19 +20,20 @@ export function UserReaderImpl(deps: Dependencies): UserReader {
   }
 }
 
-function findOne({knex}: Dependencies) {
+function findOne({ knex }: Dependencies) {
   return (userID: string): TaskEither<DomainError, UserRow[]> => {
-    const selectUserQuery = buildSelectQueryUser(knex)(selectUserFields)
-      .where(`${userSchema.columns.id}`, userID)
+    const selectUserQuery = buildSelectQueryUser(knex)(selectUserFields).where(
+      `${userSchema.columns.id}`,
+      userID
+    )
 
-      return executeQuery<UserRow, UserRow[]>(selectUserQuery)
+    return executeQuery<UserRow, UserRow[]>(selectUserQuery)
   }
 }
 
 const buildSelectQueryUser = (knex: Knex) => (
   baseQueryBuilder: (knex: Knex) => Knex.QueryBuilder
-): Knex.QueryBuilder<UserRow, UserRow[]> =>
-  baseQueryBuilder(knex).from(userSchema.tableName)
+): Knex.QueryBuilder<UserRow, UserRow[]> => baseQueryBuilder(knex).from(userSchema.tableName)
 
 const selectUserFields = (knex: Knex) =>
   knex

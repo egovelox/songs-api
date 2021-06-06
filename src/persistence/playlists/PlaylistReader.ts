@@ -4,14 +4,14 @@ import { TaskEither } from "fp-ts/lib/TaskEither"
 import * as Knex from "knex"
 
 import { executeQuery, isNonEmptyArray } from "../../knex/dbUtils"
-import { getTranslatedDescriptions } from "../description-translations/DescriptionTranslationReader"
 import { DomainError } from "../../models/errors/DomainError"
 import { NotFoundError } from "../../models/errors/NotFoundError"
 import { Playlist } from "../../models/Types"
-import { UserRow } from "../../persistence/users/UserRow"
 import { SongRow } from "../../persistence/songs/SongRow"
-import { PlaylistRow } from "../playlists/PlaylistRow"
+import { UserRow } from "../../persistence/users/UserRow"
+import { getTranslatedDescriptions } from "../description-translations/DescriptionTranslationReader"
 import * as playlistSongSchema from "../playlist-song/PlaylistSongSchema"
+import { PlaylistRow } from "../playlists/PlaylistRow"
 import * as songSchema from "../songs/SongSchema"
 import * as playlistSchema from "./PlaylistSchema"
 
@@ -29,9 +29,8 @@ export function PlaylistReaderImpl(deps: Dependencies): PlaylistReader {
   }
 }
 
-function findOne({knex}: Dependencies) {
+function findOne({ knex }: Dependencies) {
   return (user: UserRow, playlistID: string): TaskEither<DomainError, Playlist> => {
-
     const selectPlaylistQuery = buildSelectQueryPlaylists(knex)(selectPlaylistFields)
       .where(`${playlistSchema.columns.userId}`, user.id)
       .andWhere(`${playlistSchema.columns.id}`, playlistID)
@@ -53,7 +52,6 @@ function findOne({knex}: Dependencies) {
       ),
       TE.bind("translationRows", ({ songRows }) => getTranslatedDescriptions(knex, user, songRows)),
       TE.map(({ playlistRows, songRows, translationRows }) => {
-
         // recreate songs to integrate translated song descriptions
         const songs: SongRow[] = songRows.map((s: SongRow) => {
           return translationRows.map((t) => t.song_id).includes(s.song_id)
@@ -91,11 +89,11 @@ const buildSelectQuerySongs = (knex: Knex): Knex.QueryBuilder<SongRow, SongRow[]
     )
 
 const selectPlaylistFields = (knex: Knex) =>
-knex
-  .select(`${playlistSchema.columns.id}`)
-  .select(`${playlistSchema.columns.name}`)
-  .select(`${playlistSchema.columns.createdAt}`)
-  .select(`${playlistSchema.columns.userId}`)
+  knex
+    .select(`${playlistSchema.columns.id}`)
+    .select(`${playlistSchema.columns.name}`)
+    .select(`${playlistSchema.columns.createdAt}`)
+    .select(`${playlistSchema.columns.userId}`)
 
 const selectSongFields = (knex: Knex) =>
   knex
@@ -105,13 +103,12 @@ const selectSongFields = (knex: Knex) =>
     .select(`${songSchema.prefix}.${songSchema.columns.description}`)
     .select(`${songSchema.prefix}.${songSchema.columns.duration}`)
 
- 
 function mapToPlaylist(playlist: PlaylistRow, songs: SongRow[]): Playlist {
   return {
     id: playlist.id,
     name: playlist.name,
     userId: playlist.user_id,
     createdAt: playlist.created_at,
-    songs: songs.map((s) => ({...s, id: s.song_id }))
+    songs: songs.map((s) => ({ ...s, id: s.song_id })),
   }
 }

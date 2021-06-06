@@ -1,10 +1,10 @@
 import * as TE from "fp-ts/lib/TaskEither"
 import { TaskEither } from "fp-ts/lib/TaskEither"
 import * as Knex from "knex"
-import { InternalError } from "../models/errors/InternalError"
-import { logger } from "../utils/Logger"
 
 import { DomainError } from "../models/errors/DomainError"
+import { InternalError } from "../models/errors/InternalError"
+import { logger } from "../utils/Logger"
 
 export const executeQuery = <T, R>(
   baseQuery: Knex.QueryBuilder<T, R>

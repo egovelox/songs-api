@@ -1,13 +1,13 @@
-import { ErrorType, DomainError } from "./DomainError"
+import { DomainError, ErrorType } from "./DomainError"
 
 export type NotFoundError = {
-    readonly type: ErrorType.NOT_FOUND_ERROR
-    readonly clientMessage: string
+  readonly type: ErrorType.NOT_FOUND_ERROR
+  readonly clientMessage: string
 }
 
 export function NotFoundError(clientMessage: string): DomainError {
-    return {
-        type: ErrorType.NOT_FOUND_ERROR,
-        clientMessage: clientMessage
-    }
+  return {
+    type: ErrorType.NOT_FOUND_ERROR,
+    clientMessage: clientMessage,
+  }
 }

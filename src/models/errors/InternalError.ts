@@ -1,13 +1,13 @@
-import { ErrorType, DomainError } from "./DomainError"
+import { DomainError, ErrorType } from "./DomainError"
 
 export type InternalError = {
-    readonly type: ErrorType.INTERNAL_ERROR
-    readonly clientMessage: string
+  readonly type: ErrorType.INTERNAL_ERROR
+  readonly clientMessage: string
 }
 
 export function InternalError(clientMessage: string): DomainError {
-    return {
-        type: ErrorType.INTERNAL_ERROR,
-        clientMessage: clientMessage
-    }
+  return {
+    type: ErrorType.INTERNAL_ERROR,
+    clientMessage: clientMessage,
+  }
 }
