@@ -1,0 +1,19 @@
+{
+    "jsc": {
+      "parser": {
+        "syntax": "typescript",
+        "decorators": true,
+        "dynamicImport": true
+      },
+      "target": "es2019",
+      "keepClassNames": true,
+      "loose": true
+    },
+    "module": {
+      "type": "commonjs",
+      "strict": true,
+      "noInterop": true
+    },
+    "sourceMaps": true,
+    "exclude": ["test", "dist"]
+  }

@@ -2,6 +2,7 @@ import * as fastify from "fastify"
 import { DateTimeFromISOString } from "generated/types/_support/date-time"
 
 import { Playlist, Song } from "../../../models/Types"
+
 export function responseBuilderPlaylist(reply: fastify.FastifyReply, playlist: Playlist) {
   return reply.status(200).send(playlistResponseBuilder(playlist))
 }

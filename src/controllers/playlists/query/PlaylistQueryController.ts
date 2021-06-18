@@ -1,5 +1,5 @@
 import * as http from "http"
-import { GetOnePlaylistById } from "../../../generated/contracts/PlaylistsContract"
+
 import { Dependency } from "controllers/playlists/PlaylistController"
 import * as fastify from "fastify"
 import { RouteGenericInterface } from "fastify/types/route"
@@ -7,6 +7,7 @@ import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/lib/function"
 
 import { NegotiateResponseType } from "../../../config/DomainErrorNegotiator"
+import { GetOnePlaylistById } from "../../../generated/contracts/PlaylistsContract"
 import { responseBuilderPlaylist } from "../builder/PlaylistBuilder"
 
 type RouteInterface<Query, Path, Body> = Required<RouteGenericInterface> & {
