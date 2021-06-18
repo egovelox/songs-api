@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/pipeable"
 import * as Knex from "knex"
 
 import { loadConfig } from "./config/Config"
-import { registerFastify } from "./contracts/registerFastify"
+import { registerFastify } from "./generated/contracts/registerFastify"
 import { PlaylistController } from "./controllers/playlists/PlaylistController"
 import { ApplyMigrations } from "./knex/dbUtils"
 import { knex } from "./knex/knex"

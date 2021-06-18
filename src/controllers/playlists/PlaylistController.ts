@@ -1,6 +1,5 @@
-import PlaylistContract from "../../contracts/playlists/PlaylistContracts"
+import PlaylistContract from "../../generated/contracts/PlaylistsContract"
 import { PlaylistServiceReader } from "../../services/playlists/PlaylistServiceReader"
-import { UserServiceReader } from "../../services/users/UserServiceReader"
 import { getOnePlaylistById } from "./query/PlaylistQueryController"
 
 export type Dependency = {

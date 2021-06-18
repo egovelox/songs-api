@@ -1,0 +1,125 @@
+openapi: 3.0.1
+info:
+  title: songs-api
+  version: 1.0.0
+servers: 
+  - url: "{protocol}://{host}"
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      host:
+        default: localhost:8080
+        enum:
+          - localhost:8080
+  - url: "{protocol}://{customServer}"
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      customServer:
+        default: localhost:8080
+paths:
+  "/songsapi/{user}/playlist/{id}":
+    get:
+      tags:
+        - playlists
+      summary: get a playlist by id
+      operationId: getOnePlaylistById
+      parameters:
+        - name: user
+          in: path 
+          required: true
+          schema:
+            type: string
+          description: "Unique identifier of a user"
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: string
+          description: "Unique identifier of a playlist"
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Playlist"
+        "400":
+          description: wrong use of the api, check your path parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponse"
+        "404":
+          description: not found, check your path parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponse"
+        "500":
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalErrorResponse"
+components:
+  schemas:
+    GlobalErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    Playlist:
+      type: object
+      required:
+        - id
+        - name
+        - user
+        - creationDate
+        - songs
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        user:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        songs:
+          type: array
+          items:
+            $ref: "#/components/schemas/Song"
+    Song:
+      type: object
+      required:
+        - name
+        - author
+        - duration
+        - description
+        - id
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        author: 
+          type: string
+        description: 
+          type: string
+        duration: 
+          type: number
+
+
+        

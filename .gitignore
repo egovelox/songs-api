@@ -3,3 +3,4 @@ dev/docker/.docker
 .DS_Store
 /dist
 .env
+/src/generated/
