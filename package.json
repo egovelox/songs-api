@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run clean && openapi-generator && tsc --skipLibCheck --noEmit && swc ./src -d ./dist",
+    "build": "yarn run clean && openapi-generator && tsc --skipLibCheck --noEmit && swc ./src -d ./dist -s true",
     "build:tsc": "yarn run clean && openapi-generator && tsc",
     "start": "cd ./dist && NODE_ENV=development node ./index.js",
     "clean": "rimraf ./dist",
@@ -50,7 +50,7 @@
     "import-sort-style-module": "6.0.0",
     "lint-staged": "10.1.2",
     "nodemon": "^2.0.7",
-    "openapi-generator": "git://github.com/egovelox/openapi-generator.git",
+    "openapi-generator": "git://github.com/egovelox/fabernovel-custom-openapi-generator.git",
     "prettier": "2.0.3",
     "prettier-plugin-import-sort": "0.0.4",
     "rimraf": "3.0.2",
