@@ -2,7 +2,7 @@
 name: Songs API CD
 
 on: 
-  pull-request
+  pull-request:
     types: [assigned, opened, synchronize, reopened]
 
 
