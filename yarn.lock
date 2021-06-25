@@ -2544,9 +2544,9 @@ ono@^6.0.0:
   resolved "https://registry.yarnpkg.com/ono/-/ono-6.0.1.tgz#1bc14ffb8af1e5db3f7397f75b88e4a2d64bbd71"
   integrity sha512-5rdYW/106kHqLeG22GE2MHKq+FlsxMERZev9DCzQX1zwkxnFwBivSn5i17a5O/rDmOJOdf4Wyt80UZljzx9+DA==
 
-"openapi-generator@git://github.com/egovelox/openapi-generator.git":
+"openapi-generator@git://github.com/egovelox/fabernovel-custom-openapi-generator.git":
   version "3.0.4-SNAPSHOT"
-  resolved "git://github.com/egovelox/openapi-generator.git#8e2d230a9875fd36547fac5029a9aa3bd2143bc6"
+  resolved "git://github.com/egovelox/fabernovel-custom-openapi-generator.git#22428d0558e840e9fd984cc68c3ca3c2624e19ed"
   dependencies:
     cosmiconfig "6.0.0"
     find-git-root "^1.0.4"
