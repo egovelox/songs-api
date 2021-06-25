@@ -1,7 +1,10 @@
 ---
 name: Songs API CD
 
-on: push
+on: 
+  - pull-request
+    types: [assigned, opened, synchronize, reopened]
+
 
 jobs:
   custom_test:
